@@ -37,10 +37,13 @@ app.post("/api/posts", (req,res, next) => {
     title: req.body.title,
     content: req.body.content
   });
-  post.save();
-  res.status(201).json({
-    message: 'Post Added'
+  post.save().then(createdPost => {
+    res.status(201).json({
+      message: 'Post Added',
+      postId: createdPost._id
+    });
   });
+
 });
 
 app.get("/api/posts", (req, res, next) => {
