@@ -8,6 +8,9 @@ import { Post } from './posts/post.model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  title(title: any) {
+    throw new Error('Method not implemented.');
+  }
   storedPosts: Post[] = [];
 
   onPostAdded(post){
