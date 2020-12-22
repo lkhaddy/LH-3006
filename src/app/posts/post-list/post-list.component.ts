@@ -13,15 +13,18 @@ styleUrls: ['./post-list.component.css']
 export class PostListComponent implements OnInit, OnDestroy {
 
   posts: Post[] = [];
+  isLoading = false;
   private postsSub: Subscription;
 
   //Dependancy Injection
   constructor(public postsService: PostService){  }
 
   ngOnInit(){
+    this.isLoading = true;
     this.postsService.getPosts();
     this.postsSub = this.postsService.getPostUpdateListener()
       .subscribe((posts: Post[]) => {
+        this.isLoading = false;
         this.posts = posts;
     });
   }
