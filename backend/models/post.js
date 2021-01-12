@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const postSchema = mongoose.Schema({
+  //Content included in Schema
   title: { type: String, required: true },
   content: { type: String, required: true },
   imagePath: { type: String, required: true },

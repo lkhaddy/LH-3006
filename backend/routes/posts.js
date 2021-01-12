@@ -2,11 +2,12 @@ const express = require("express");
 const multer = require("multer");
 
 const Post = require("../models/post");
-const checkAuth = require("../middleware/check-auth");
+const viewAuth = require("../middleware/view-auth");
 
 const router = express.Router();
 
 const MIME_TYPE_MAP = {
+  //Image types which are allowed when uploading
   "image/png": "png",
   "image/jpeg": "jpg",
   "image/jpg": "jpg"
@@ -15,10 +16,12 @@ const MIME_TYPE_MAP = {
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
+    //Error Validation if there is a wrong filetype
     let error = new Error("Invalid mime type");
     if (isValid) {
       error = null;
     }
+    //Where the images are stored
     cb(error, "backend/images");
   },
   filename: (req, file, cb) => {
@@ -33,10 +36,11 @@ const storage = multer.diskStorage({
 
 router.post(
   "",
-  checkAuth,
+  viewAuth,
   multer({ storage: storage }).single("image"),
   (req, res, next) => {
     const url = req.protocol + "://" + req.get("host");
+    //What the post will consist of
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
@@ -54,6 +58,7 @@ router.post(
           }
         });
       })
+      //Error validation for if post fails
       .catch(error => {
         res.status(500).json({
           message: "Creating a post failed!"
@@ -64,7 +69,7 @@ router.post(
 
 router.put(
   "/:id",
-  checkAuth,
+  viewAuth,
   multer({ storage: storage }).single("image"),
   (req, res, next) => {
     let imagePath = req.body.imagePath;
@@ -79,12 +84,13 @@ router.put(
       imagePath: imagePath,
       creator: req.userData.userId
     });
+    //Updating posts
     Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post)
       .then(result => {
         if (result.nModified > 0) {
           res.status(200).json({ message: "Update successful!" });
         } else {
-          res.status(401).json({ message: "Not authorized!" });
+          res.status(401).json({ message: "Not authorised!" });
         }
       })
       .catch(error => {
@@ -138,7 +144,7 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-router.delete("/:id", checkAuth, (req, res, next) => {
+router.delete("/:id", viewAuth, (req, res, next) => {
   Post.deleteOne({ _id: req.params.id, creator: req.userData.userId })
     .then(result => {
       console.log(result);

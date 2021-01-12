@@ -83,7 +83,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     };
     reader.readAsDataURL(file);
   }
-
+  //Saving post content
   onSavePost() {
     if (this.form.invalid) {
       return;
