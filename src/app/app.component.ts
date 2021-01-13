@@ -7,8 +7,8 @@ import { ValidService } from './auth/validation.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  constructor(private authService: ValidService) {}
+  constructor(private validService: ValidService) {}
   ngOnInit() {
-    this.authService.autoAuthUser();
+    this.validService.autoAuthUser();
   }
 }
