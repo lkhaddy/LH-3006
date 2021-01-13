@@ -77,6 +77,7 @@ router.put(
       const url = req.protocol + "://" + req.get("host");
       imagePath = url + "/images/" + req.file.filename;
     }
+    //Creating post object
     const post = new Post({
       _id: req.body.id,
       title: req.body.title,

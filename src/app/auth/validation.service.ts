@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { AuthData } from "./auth-data.model";
+import { ValidationData } from "./validation-data.model";
 import { Subject } from "rxjs";
 import { Router } from "@angular/router";
 import { ThrowStmt } from "@angular/compiler";
 
 @Injectable({ providedIn: "root" })
-export class AuthService {
-  private isAuthenticated = false;
+export class ValidService {
+  private isValidated = false;
   private token: string;
   private tokenTimer: any;
   private userId: string;
@@ -20,7 +20,7 @@ export class AuthService {
   }
 
   getIsAuth() {
-    return this.isAuthenticated;
+    return this.isValidated;
   }
 
   getUserId() {
@@ -32,8 +32,8 @@ export class AuthService {
   }
 
   createUser(email: string, password: string) {
-    const authData: AuthData = {email: email, password: password };
-     return this.http.post("http://localhost:3000/api/user/signup", authData)
+    const validationData: ValidationData = {email: email, password: password };
+     return this.http.post("http://localhost:3000/api/user/signup", validationData)
      .subscribe(() => {
         this.router.navigate(['/']);
      }, error => {
@@ -43,15 +43,15 @@ export class AuthService {
   //this.router.navigate(['/']);
 
   loginUser(email: string, password: string) {
-    const authData: AuthData = { email: email, password: password };
-    this.http.post<{ token: string, expiresIn: number, userId: string }>("http://localhost:3000/api/user/login", authData)
+    const validationData: ValidationData = { email: email, password: password };
+    this.http.post<{ token: string, expiresIn: number, userId: string }>("http://localhost:3000/api/user/login", validationData)
     .subscribe(response => {
       const token = response.token;
       this.token = token;
       if(token) {
         const expiresInDuration = response.expiresIn;
         this.setAuthTimer(expiresInDuration);
-        this.isAuthenticated = true;
+        this.isValidated = true;
         this.userId = response.userId;
         this.authStatusListener.next(true);
         const now = new Date();
@@ -74,7 +74,7 @@ export class AuthService {
 
     if(expiresIn > 0) {
       this.token = authInformation.token;
-      this.isAuthenticated = true;
+      this.isValidated = true;
       this.userId = authInformation.userId;
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
@@ -83,7 +83,7 @@ export class AuthService {
 
   logout() {
     this.token = null;
-    this.isAuthenticated = false;
+    this.isValidated = false;
     this.authStatusListener.next(false);
     this.userId = null;
     clearTimeout(this.tokenTimer);

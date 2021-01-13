@@ -4,16 +4,16 @@ import { ActivatedRoute, ParamMap } from "@angular/router";
 
 import { PostService } from "../posts.service";
 import { Post } from "../post.model";
-import { mimeType } from "./mine-type.validator";
+import { imageType } from "./image-type.validator";
 import { Subscription } from "rxjs";
-import { AuthService } from "src/app/auth/auth.service";
+import { ValidService } from "src/app/auth/validation.service";
 
 @Component({
-  selector: "app-post-create",
-  templateUrl: "./post-create.component.html",
-  styleUrls: ["./post-create.component.css"]
+  selector: "app-post-generate",
+  templateUrl: "./post-generate.component.html",
+  styleUrls: ["./post-generate.component.css"]
 })
-export class PostCreateComponent implements OnInit, OnDestroy {
+export class PostGenerateComponent implements OnInit, OnDestroy {
   enteredTitle = "";
   enteredContent = "";
   post: Post;
@@ -27,11 +27,11 @@ export class PostCreateComponent implements OnInit, OnDestroy {
   constructor(
     public postsService: PostService,
     public route: ActivatedRoute,
-    private authService: AuthService
+    private validService: ValidService
   ) {}
 
   ngOnInit() {
-    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+    this.authStatusSub = this.validService.getAuthStatusListener().subscribe(
       authStatus => {
         this.isLoading = false;
       }
@@ -43,7 +43,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
       content: new FormControl(null, { validators: [Validators.required] }),
       image: new FormControl(null, {
         validators: [Validators.required],
-        asyncValidators: [mimeType]
+        asyncValidators: [imageType]
       })
     });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {

@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
-const user = require("../models/user");
 
 const router = express.Router();
 //Hash password using bcrypt package
@@ -47,6 +46,7 @@ router.post("/login", (req, res, next) => {
         message: 'Invalid credentials'
       });
     }
+    //Token created which expires within 1hr of user loggin in
     const token = jwt.sign({email: fetchedUser.email, userId: fetchedUser._id },
     'secret_this_should_be_long',
     {expiresIn: "1h"}

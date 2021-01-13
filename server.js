@@ -52,3 +52,19 @@ const server = http.createServer(app);
 server.on("error", onError);
 server.on("listening", onListening);
 server.listen(port);
+
+// var io = socket(server);
+
+// io.on('connection', (socket) => {
+
+//     console.log(`New connection ${socket.id}`)
+//     socket.on('chat', function(data){
+//         io.sockets.emit('chat', data);
+//     });
+
+//     socket.on('typing', function(data){
+//         io.sockets.emit('typing', data);
+
+//     });
+
+// });

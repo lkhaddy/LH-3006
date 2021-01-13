@@ -4,14 +4,14 @@ import { Subscription } from "rxjs";
 
 import { Post } from "../post.model";
 import { PostService } from "../posts.service";
-import { AuthService } from "../../auth/auth.service";
+import { ValidService } from "../../auth/validation.service";
 
 @Component({
-  selector: "app-post-list",
-  templateUrl: "./post-list.component.html",
-  styleUrls: ["./post-list.component.css"]
+  selector: "app-post-view",
+  templateUrl: "./post-view.component.html",
+  styleUrls: ["./post-view.component.css"]
 })
-export class PostListComponent implements OnInit, OnDestroy {
+export class PostViewComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   isLoading = false;
   totalPosts = 0;
@@ -25,13 +25,13 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   constructor(
     public postsService: PostService,
-    private authService: AuthService
+    private validService: ValidService
   ) {}
 
   ngOnInit() {
     this.isLoading = true;
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
-    this.userId = this.authService.getUserId();
+    this.userId = this.validService.getUserId();
     this.postsSub = this.postsService
       .getPostUpdateListener()
       .subscribe((postData: { posts: Post[]; postCount: number }) => {
@@ -39,12 +39,12 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.totalPosts = postData.postCount;
         this.posts = postData.posts;
       });
-    this.userIsAuthenticated = this.authService.getIsAuth();
-    this.authStatusSub = this.authService
+    this.userIsAuthenticated = this.validService.getIsAuth();
+    this.authStatusSub = this.validService
       .getAuthStatusListener()
       .subscribe(isAuthenticated => {
         this.userIsAuthenticated = isAuthenticated;
-        this.userId = this.authService.getUserId();
+        this.userId = this.validService.getUserId();
       });
   }
 
